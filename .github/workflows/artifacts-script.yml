@@ -44,6 +44,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: test-results
+          
+      - name: Output Content
+        run: ls
 
       - name: Build
         run: npm run build
