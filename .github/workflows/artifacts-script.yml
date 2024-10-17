@@ -1,0 +1,52 @@
+name: testing-and-deployment-pipeline
+on: push
+jobs:
+  testing-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+        
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Upload test results
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: dist
+
+  deployment-pipeline:
+    needs: testing-pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+    
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+        
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Download test results
+        uses: actions/download-artifact@v2
+        with:
+          name: test-results
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: echo "Deploying..."
