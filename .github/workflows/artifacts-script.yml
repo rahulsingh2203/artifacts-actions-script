@@ -18,6 +18,16 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: dist
+
+
 
   deployment-pipeline:
     needs: testing-pipeline
@@ -34,19 +44,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Build
-        run: npm run build
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-files
-          path: dist
-
       - name: download artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist-files
+
+      - name: Output Contents
+        run: ls
 
       - name: Deploy
         run: echo "Deploying..."
