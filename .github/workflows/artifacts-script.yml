@@ -56,4 +56,5 @@ jobs:
         run: |
           echo "Deploying..."
           echo ${{ github.actor}}
+          echo ${{ job.status}}
 
